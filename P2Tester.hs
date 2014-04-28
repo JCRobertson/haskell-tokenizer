@@ -100,7 +100,7 @@ test_all = let  -- build up all data for tokenize test.
 --------------------------------------------------------------------------------
 -- SECOND VERSION is more verbose, but occasionally would crash someone's code.
             let stringout = ("    #"++show number++": ") ++ (if correct then "√ " else "WRONG: <"++show inn++">")++"\n"
-            let stringout = ("    #"++show number++": ") ++ (if correct then "√ " else "WRONG: <"++show inn++">"++"\n\texpected: "++show expected++"\n\treceived: "++show out)++"\n"
+            let stringout = ("    #"++show number++": ") ++ (if correct then "√ " else "WRONG: <"++show inn++">"++"\n\treceiving: "++show expected++"\n\texpected: "++show out)++"\n"
 --------------------------------------------------------------------------------
             rest <- (go_t rs)
             return $ stringout ++ rest

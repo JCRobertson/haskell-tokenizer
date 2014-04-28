@@ -80,7 +80,7 @@ wordTokens (x:xs)   | (head x) /= '"' = words x ++ wordTokens xs
 
 fetchTokens:: [String] -> [Token]
 fetchTokens [] = []
-fetchTokens (x:xs)  | (head x) == '"' = (Str x) : fetchTokens xs
+fetchTokens (x:xs)  | (head x) == '"' = (Str (tail(init x))) : fetchTokens xs
                     | checkNum x == True = (Num (getNum x)) : fetchTokens xs
                     | checkIdent (checkToken x) == True = confirmIdent x ++ fetchTokens xs
                     | otherwise = (checkToken x) : fetchTokens xs
@@ -124,6 +124,31 @@ checkToken x =
       "*"       ->  OpMul
       _         ->  (Ident x)
 
+checkOperator :: String -> Token
+checkOperator x = 
+    case x of
+      ";"       ->  SemiColon
+      "{"       ->  BraceOpen
+      "}"       ->  BraceClose
+      "("       ->  ParenOpen
+      ")"       ->  ParenClose
+      "||"      ->  OpOr
+      "&&"      ->  OpAnd
+      "!"       ->  OpNot      
+      "<="      ->  OpLE
+      ">="      ->  OpGE
+      "=="      ->  OpEq
+      "="       ->  Equal
+      "<"       ->  OpL
+      ">"       ->  OpG
+      "!="      ->  OpNeq
+      "+"       ->  OpAdd
+      "-"       ->  OpSub 
+      "/"       ->  OpDiv
+      "**"      ->  OpPow
+      "*"       ->  OpMul
+      _         ->  (Ident x)
+
 checkNum :: String -> Bool
 checkNum [] = True
 checkNum (x:xs) = isDigit x && checkNum xs
@@ -144,8 +169,8 @@ spaceIdent :: String -> String
 spaceIdent [] = []
 spaceIdent [x]  | checkIdent (checkToken [x]) /= True = " " ++ [x]
                 | otherwise = [x]
-spaceIdent (x:y:xs) | checkIdent (checkToken (x:[y])) /= True = " " ++ [x] ++ [y] ++ " " ++ spaceIdent xs
-                    | checkIdent (checkToken [x]) /= True = " " ++ [x] ++ " " ++ spaceIdent (y:xs)
+spaceIdent (x:y:xs) | checkIdent (checkOperator (x:[y])) /= True = " " ++ [x] ++ [y] ++ " " ++ spaceIdent xs
+                    | checkIdent (checkOperator [x]) /= True = " " ++ [x] ++ " " ++ spaceIdent (y:xs)
                     | otherwise = x : spaceIdent (y:xs)
 
 fetchTokens2 :: [String] -> [Token]
@@ -159,7 +184,7 @@ showTokens [x] = unpackTokens x
 showTokens (x:xs) = unpackTokens x ++ showTokens xs
 
 unpackTokens :: Token -> String
-unpackTokens (Str x)   = "String " ++ (init (tail(init (tail x)))) ++ "\n"
+unpackTokens (Str x)   = "String " ++ x ++ "\n"
 unpackTokens (Num x)   = "Num " ++ (show x) ++ "\n"
 unpackTokens (Ident x)   = "Ident " ++ x ++ "\n"
 unpackTokens Begin = "Begin\n"
